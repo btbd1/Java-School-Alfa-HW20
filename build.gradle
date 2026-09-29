@@ -1,0 +1,42 @@
+plugins {
+    id 'java'
+    id 'io.qameta.allure' version '2.12.0'
+}
+
+group = 'com.calc'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+def allureVersion = '2.29.0'
+
+
+configurations {
+    aspectjAgent
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testImplementation "io.qameta.allure:allure-junit5:${allureVersion}"
+    aspectjAgent 'org.aspectj:aspectjweaver:1.9.22.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.2'
+}
+
+test {
+    useJUnitPlatform()
+    doFirst {
+        jvmArgs "-javaagent:${configurations.aspectjAgent.singleFile}"
+    }
+}
+
+
+allure {
+    version = allureVersion
+}
+
+tasks.named('allureServe') {
+    dependsOn test
+
+}
